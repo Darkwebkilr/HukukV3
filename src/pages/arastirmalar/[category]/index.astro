@@ -1,46 +1,37 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { getCollection } from 'astro:content';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
 
-export async function getStaticPaths() {
-  const allPosts = await getCollection('arastirmalar');
-  const uniqueCategories = [...new Set(allPosts.map(post => post.slug.split('/')[0]))];
+export const prerender = false;
 
-  return uniqueCategories.map(category => {
-    return {
-      params: { category },
-    };
-  });
-}
+const { category: categorySlug } = Astro.params;
 
-const { category } = Astro.params;
-
-if (!category) {
-    return new Response(null, {
-        status: 404,
-        statusText: 'Not Found'
+// Helper function to decode HTML entities
+function decode(str: string) {
+    if (!str) return '';
+    return str.replace(/&#(\d+);/g, (match, dec) => {
+        return String.fromCharCode(dec);
     });
 }
 
-const allPosts = await getCollection('arastirmalar', ({ id }) => {
-  return id.startsWith(category);
-});
+// 1. Fetch the category details by slug to get its ID and name
+const categoryResponse = await fetch(`https://enessevinc.com/wp-json/wp/v2/categories?slug=${categorySlug}`);
+const categoryData = await categoryResponse.json();
+const category = categoryData[0];
 
-const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+let posts = [];
+if (category) {
+  // 2. Fetch all posts belonging to this category ID
+  const postsResponse = await fetch(`https://enessevinc.com/wp-json/wp/v2/posts?categories=${category.id}&_embed`);
+  posts = await postsResponse.json();
+}
 
-const categoryNames: { [key: string]: string } = {
-  'anayasa-hukuku': 'Anayasa Hukuku',
-  'ceza-hukuku': 'Ceza Hukuku',
-  'idare-hukuku': 'İdare Hukuku',
-  'medeni-hukuk': 'Medeni Hukuk',
-};
+const pageTitle = category ? decode(category.name) : 'Kategori Bulunamadı';
+const pageDescription = category ? decode(category.description) || `Hukuk alanındaki derinlemesine akademik çalışmalar, makaleler ve hukuki analizler. Kategori: ${pageTitle}` : '';
 
-const pageTitle = `${categoryNames[category] || 'Araştırmalar'}`;
-const pageDescription = `Hukuk alanındaki derinlemesine akademik çalışmalar, makaleler ve hukuki analizler. Kategori: ${pageTitle}`;
-
-function formatDate(date: Date) {
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
   return date.toLocaleDateString('tr-TR', {
     year: 'numeric',
     month: 'long',
@@ -56,7 +47,7 @@ function formatDate(date: Date) {
     <!-- Hero Section -->
     <section class="bg-gradient-to-r from-green-600 to-green-800 text-white py-16">
       <div class="max-w-6xl mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">{pageTitle}</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" set:html={pageTitle}></h1>
         <p class="text-xl text-green-100 max-w-2xl mx-auto">
           Bu alanda yayınlanan tüm akademik çalışmalarım ve makalelerim
         </p>
@@ -66,36 +57,43 @@ function formatDate(date: Date) {
     <!-- Blog Posts -->
     <main class="max-w-6xl mx-auto px-4 py-12">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {sortedPosts.map((post) => (
-          <a href={`/arastirmalar/${post.slug}`} class="block hover:text-green-600 transition-colors group">
-            <article class="bg-white rounded-xl shadow-lg overflow-hidden h-full group-hover:shadow-xl transition-shadow">
-              {post.data.heroImage && (
-                <div class="aspect-video overflow-hidden">
-                  <img 
-                    src={`${import.meta.env.BASE_URL}${post.data.heroImage.startsWith('/') ? '' : '/'}${post.data.heroImage}`} 
-                    alt={post.data.title}
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              )}
-              
-              <div class="p-6 flex flex-col">
-                <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors">
-                    {post.data.title}
-                </h2>
+        {posts.length > 0 ? posts.map((post) => {
+          const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+          return (
+            <a href={`/arastirmalar/${categorySlug}/${post.slug}`} class="block hover:text-green-600 transition-colors group">
+              <article class="bg-white rounded-xl shadow-lg overflow-hidden h-full group-hover:shadow-xl transition-shadow">
+                {featuredImage && (
+                  <div class="aspect-video overflow-hidden">
+                    <img 
+                      src={featuredImage}
+                      alt={decode(post.title.rendered)}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                
+                <div class="p-6 flex flex-col">
+                  <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors" set:html={post.title.rendered}>
+                  </h2>
 
-                <p class="text-gray-600 mb-4 line-clamp-3">
-                  {post.data.description}
-                </p>
+                  {post.excerpt.rendered && (
+                    <div class="text-gray-600 mb-4 line-clamp-3" set:html={post.excerpt.rendered.replace(/<a.*>.*<\/a>/, '')} />
+                  )}
 
-                <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
-                    <time>{formatDate(post.data.pubDate)}</time>
-                    <span class="font-semibold">Devamını Oku &rarr;</span>
+                  <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+                      <time>{formatDate(post.date)}</time>
+                      <span class="font-semibold">Devamını Oku &rarr;</span>
+                  </div>
                 </div>
-              </div>
-            </article>
-          </a>
-        ))}
+              </article>
+            </a>
+          )
+        }) : (
+          <div class="col-span-full text-center py-12">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-2">Henüz Yazı Eklenmemiş</h2>
+            <p class="text-gray-500">Bu kategoriye ait bir yazı bulunamadı. Lütfen daha sonra tekrar kontrol edin.</p>
+          </div>
+        )}
       </div>
        <div class="text-center mt-12">
         <a href="/arastirmalar" class="text-green-600 hover:text-green-800 font-semibold transition-colors">
@@ -122,3 +120,4 @@ function formatDate(date: Date) {
     overflow: hidden;
   }
 </style>
+
