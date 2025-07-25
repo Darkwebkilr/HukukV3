@@ -8,7 +8,7 @@ export const prerender = false;
 const { category: categorySlug, slug } = Astro.params;
 
 // Fetch the specific post from WordPress using the slug
-const response = await fetch(`https://enessevinc.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
+const response = await fetch(`https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
 const posts = await response.json();
 const post = posts[0];
 

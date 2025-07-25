@@ -1,1 +1,0 @@
-feat: Update favicon to use site logo

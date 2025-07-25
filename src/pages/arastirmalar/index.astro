@@ -15,14 +15,14 @@ function decode(str: string) {
 }
 
 // 1. Find the parent category "Araştırmalar" to get its ID
-const parentCategoryResponse = await fetch('https://enessevinc.com/wp-json/wp/v2/categories?slug=arastirmalar');
+const parentCategoryResponse = await fetch('https://n6j.7b0.myftpupload.com/wp-json/wp/v2/categories?slug=arastirmalar');
 const parentCategoryData = await parentCategoryResponse.json();
 const parentCategoryId = parentCategoryData[0]?.id;
 
 let categories = [];
 if (parentCategoryId) {
   // 2. Fetch all categories that have "Araştırmalar" as their parent
-  const subCategoriesResponse = await fetch(`https://enessevinc.com/wp-json/wp/v2/categories?parent=${parentCategoryId}`);
+  const subCategoriesResponse = await fetch(`https://n6j.7b0.myftpupload.com/wp-json/wp/v2/categories?parent=${parentCategoryId}`);
   categories = await subCategoriesResponse.json();
 }
 

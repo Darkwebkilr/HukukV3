@@ -9,7 +9,7 @@ export const prerender = false;
 const { slug } = Astro.params;
 
 // Fetch the specific post from WordPress using the slug
-const response = await fetch(`https://enessevinc.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
+const response = await fetch(`https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
 const posts = await response.json();
 
 // If no post is found, Astro will show a 404 page by default

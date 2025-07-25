@@ -16,14 +16,14 @@ function decode(str: string) {
 }
 
 // 1. Fetch the category details by slug to get its ID and name
-const categoryResponse = await fetch(`https://enessevinc.com/wp-json/wp/v2/categories?slug=${categorySlug}`);
+const categoryResponse = await fetch(`https://n6j.7b0.myftpupload.com/wp-json/wp/v2/categories?slug=${categorySlug}`);
 const categoryData = await categoryResponse.json();
 const category = categoryData[0];
 
 let posts = [];
 if (category) {
-  // 2. Fetch all posts belonging to this category ID
-  const postsResponse = await fetch(`https://enessevinc.com/wp-json/wp/v2/posts?categories=${category.id}&_embed`);
+  // 2. Fetch all posts belonging to this category
+  const postsResponse = await fetch(`https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts?categories=${category.id}&_embed`);
   posts = await postsResponse.json();
 }
 
