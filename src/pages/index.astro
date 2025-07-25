@@ -5,16 +5,21 @@ import Footer from '../components/Footer.astro';
 
 const pageTitle = "Ana Sayfa";
 const pageDescription = "Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi Enes Sevinç'in kişisel web sitesi. Ceza ve özel hukuk alanlarındaki blog yazılarını ve araştırmalarını keşfedin.";
+
+// Fetch latest 3 blog posts from WordPress
+const response = await fetch('https://enessevinc.com/wp-json/wp/v2/posts?per_page=3&_embed');
+const latestPosts = await response.json();
+
+// Helper function to decode HTML entities
+function decode(str: string) {
+    if (!str) return '';
+    return str.replace(/&#(\d+);/g, (match, dec) => {
+        return String.fromCharCode(dec);
+    });
+}
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <!-- 
-    Merhaba! Sitenizin ana sayfasını, gönderdiğiniz içerik ve talepleriniz doğrultusunda yeniden oluşturdum.
-    - Hero (karşılama) alanı dışındaki tüm görseller `<img>` etiketi ile değiştirildi.
-    - Görsel içeren kutulara (div) tıklandığında, görselin büyümesi (zoom) efekti eklendi.
-    - Lütfen aşağıdaki `src` yollarında belirtilen görselleri `public/images/` klasörüne eklediğinizden emin olun.
-      Örnek: public/images/hero-background.jpg
-  -->
   <div
     class="relative flex size-full min-h-screen flex-col bg-gray-50 justify-between group/design-root overflow-x-hidden"
     style='font-family: "Public Sans", "Noto Sans", sans-serif;'
@@ -72,47 +77,25 @@ const pageDescription = "Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi 
       </div>
       <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Blog</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
-        <!-- Blog Yazısı 1 -->
-        <a href="/blog/tarimsal-arazilerde-imar-ve-hukuki-surecler" class="block group">
-          <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-            <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1">
-              <img src={`/images/blog1.png`} alt="Tarım Arazileri" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
-            </div>
-            <div class="p-4">
-              <p class="text-[#5e7387] text-sm font-normal leading-normal">7 dakikalık okuma</p>
-              <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600">Tarımsal Arazilerde İmar ve Hukuki Süreçler</p>
-              <p class="text-[#5e7387] text-sm font-normal leading-normal mt-2">Toprak, insan yaşamı için vazgeçilmez bir kaynaktır. Bu yazıda, tarım arazilerinin korunması...</p>
-            </div>
-          </div>
-        </a>
-        <!-- Blog Yazısı 2 -->
-        <a href="/blog/turk-miras-hukuku-temelleri" class="block group">
-          <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-            <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1">
-              <img src={`/images/blog2.png`} alt="Miras Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
-            </div>
-            <div class="p-4">
-              <p class="text-[#5e7387] text-sm font-normal leading-normal">10 dakikalık okuma</p>
-              <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600">Türk Miras Hukuku Temelleri</p>
-              <p class="text-[#5e7387] text-sm font-normal leading-normal mt-2">Miras, bir kişinin ölümüyle birlikte, onun malvarlığının mirasçılarına intikal etmesi sürecini ifade eder...</p>
-            </div>
-          </div>
-        </a>
-        <!-- Blog Yazısı 3 -->
-        <a href="/blog/gayrimenkul-satislarinda-tapu-islemleri" class="block group">
-          <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-            <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1">
-              <img src={`/images/blog3.png`} alt="Gayrimenkul Satışları" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
-            </div>
-            <div class="p-4">
-              <p class="text-[#5e7387] text-sm font-normal leading-normal">8 dakikalık okuma</p>
-              <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600">Gayrimenkul Satışlarında Tapu İşlemleri</p>
-              <p class="text-[#5e7387] text-sm font-normal leading-normal mt-2">
-                Türkiye’de bireylerin en önemli malvarlığı unsurlarından biri taşınmazlardır. Tapuda yapılan işlemler...
-              </p>
-            </div>
-          </div>
-        </a>
+        {latestPosts.map(post => {
+          const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || `/images/blog${latestPosts.indexOf(post) + 1}.png`;
+          const title = decode(post.title.rendered);
+          const excerpt = decode(post.excerpt.rendered.replace(/<a.*>.*<\/a>/, ''));
+
+          return (
+            <a href={`/blog/${post.slug}`} class="block group">
+              <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1 aspect-video">
+                  <img src={featuredImage} alt={title} class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+                </div>
+                <div class="p-4">
+                  <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600" set:html={title}></p>
+                  <div class="text-[#5e7387] text-sm font-normal leading-normal mt-2 line-clamp-3" set:html={excerpt}></div>
+                </div>
+              </div>
+            </a>
+          )
+        })}
       </div>
 
       <!-- Hakkımda Bölümü -->
@@ -165,6 +148,12 @@ const pageDescription = "Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi 
 
   .animation-delay-300 {
     animation-delay: 0.3s;
+  }
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 </style>
 
