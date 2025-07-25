@@ -1,0 +1,127 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+// Define a more specific type for our processed posts to ensure type safety
+type ProcessedPost = (CollectionEntry<'blog'> | CollectionEntry<'arastirmalar'>) & {
+  url: string;
+  type: 'blog' | 'arastirmalar';
+};
+
+const query = Astro.url.searchParams.get('q');
+
+const blogPosts = await getCollection('blog');
+const arastirmalarPosts = await getCollection('arastirmalar');
+
+let filteredPosts: ProcessedPost[] = [];
+
+if (query) {
+  const lowerCaseQuery = query.toLocaleLowerCase('tr-TR');
+
+  const allContent: ProcessedPost[] = [
+    ...blogPosts.map(post => ({ ...post, type: 'blog' as const, url: `/blog/${post.slug}` })),
+    ...arastirmalarPosts.map(post => ({ ...post, type: 'arastirmalar' as const, url: `/arastirmalar/${post.slug}` }))
+  ];
+
+  filteredPosts = allContent.filter((post) => {
+    // Safely access and search text content, providing empty fallbacks
+    const title = (post.data.title ?? '').toLocaleLowerCase('tr-TR');
+    const description = (post.data.description ?? '').toLocaleLowerCase('tr-TR');
+    const body = (post.body ?? '').toLocaleLowerCase('tr-TR');
+    
+    return title.includes(lowerCaseQuery) || 
+           description.includes(lowerCaseQuery) || 
+           body.includes(lowerCaseQuery);
+  });
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('tr-TR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<Layout>
+  <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <div class="bg-white p-8 rounded-xl shadow-lg">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Arama Sonuçları</h1>
+        {query ? (
+          <p class="text-lg text-gray-600 mb-8">
+            "<span class="font-semibold">{query}</span>" için bulunan sonuçlar:
+          </p>
+        ) : (
+          <p class="text-lg text-gray-600 mb-8">Lütfen bir arama terimi girin.</p>
+        )}
+
+        {query && (
+          <div>
+            {filteredPosts.length > 0 ? (
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredPosts.map((post) => (
+                  <a href={post.url} class="block hover:text-blue-600 transition-colors group">
+                    <article class="bg-gray-50 rounded-xl shadow-md overflow-hidden h-full group-hover:shadow-lg transition-shadow">
+                      {post.data.heroImage && (
+                        <div class="aspect-video overflow-hidden">
+                          <img 
+                            src={post.data.heroImage} 
+                            alt={post.data.title}
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      )}
+                      <div class="p-6 flex flex-col">
+                        <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                            {post.data.title}
+                        </h2>
+                        <p class="text-gray-600 mb-4 line-clamp-3 text-sm">
+                          {post.data.description}
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+                          <span class="inline-block px-3 py-1 text-xs font-semibold text-purple-600 bg-purple-100 rounded-full">
+                            {post.type === 'blog' ? 'BLOG' : 'ARAŞTIRMA'}
+                          </span>
+                          <time>{formatDate(post.data.pubDate)}</time>
+                        </div>
+                      </div>
+                    </article>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div class="text-center py-16">
+                <p class="text-xl text-gray-500">Aradığınız kriterlere uygun sonuç bulunamadı.</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

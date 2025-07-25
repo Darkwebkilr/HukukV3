@@ -1,0 +1,121 @@
+---
+// Bu bileşen için sunucu taraflı mantık gerekmez.
+---
+
+<header id="main-header" class="bg-gray-50/95 p-4 shadow-sm transition-all duration-300 ease-in-out z-30">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <!-- Sol Bölüm -->
+    <div class="flex-1 flex justify-start">
+      <a href="/" class="flex items-center">
+        <img src={`${import.meta.env.BASE_URL}/images/Logo3.png`} alt="Enes Bey Logo" class="h-20 md:h-24">
+      </a>
+    </div>
+
+    <!-- Orta Bölüm -->
+    <nav class="hidden md:flex items-center justify-center space-x-8">
+      <a href="/" class="text-gray-600 hover:text-blue-600 transition-colors">Ana Sayfa</a>
+      <a href="/blog" class="text-gray-600 hover:text-blue-600 transition-colors">Blog</a>
+      <a href="/arastirmalar" class="text-gray-600 hover:text-blue-600 transition-colors">Araştırmalar</a>
+      <a href="/hakkimizda" class="text-gray-600 hover:text-blue-600 transition-colors">Hakkımızda</a>
+      <a href="/iletisim" class="text-gray-600 hover:text-blue-600 transition-colors">İletişim</a>
+      <a href="/yasal-uyari" class="text-gray-600 hover:text-blue-600 transition-colors">Yasal Uyarı</a>
+    </nav>
+
+    <!-- Sağ Bölüm -->
+    <div class="flex-1 flex justify-end">
+       <button id="menu-toggle" class="md:hidden text-gray-800 flex size-12 shrink-0 items-center justify-center hover:bg-gray-200 rounded-lg transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Yandan Açılan Mobil Menü -->
+<div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40 transition-opacity duration-300"></div>
+<nav id="mobile-menu-panel" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
+  <div class="p-4">
+    <button id="close-menu-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M208.49,191.51a12,12,0,0,1-17,17L128,145,64.49,208.49a12,12,0,0,1-17-17L111,128,47.51,64.49a12,12,0,0,1,17-17L128,111l63.51-63.52a12,12,0,0,1,17,17L145,128Z"></path></svg>
+    </button>
+    <div class="mt-12 flex flex-col space-y-4">
+      <a href="/" class="text-gray-800 text-lg font-medium hover:text-blue-600 transition-colors">Ana Sayfa</a>
+      <a href="/blog" class="text-gray-800 text-lg font-medium hover:text-blue-600 transition-colors">Blog</a>
+      <a href="/arastirmalar" class="text-gray-800 text-lg font-medium hover:text-blue-600 transition-colors">Araştırmalar</a>
+      <a href="/hakkimizda" class="text-gray-800 text-lg font-medium hover:text-blue-600 transition-colors">Hakkımızda</a>
+      <a href="/iletisim" class="text-gray-800 text-lg font-medium hover:text-blue-600 transition-colors">İletişim</a>
+      <a href="/yasal-uyari" class="text-gray-800 text-lg font-medium hover:text-blue-600 transition-colors">Yasal Uyarı</a>
+    </div>
+  </div>
+</nav>
+
+
+<style>
+  body.header-is-sticky {
+    padding-top: 82px; /* Header'ın yüksekliği kadar boşluk */
+  }
+  #main-header.is-sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    animation: slide-down 0.3s ease-out forwards;
+  }
+  @keyframes slide-down {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+  
+  #mobile-menu-panel.is-open {
+    transform: translateX(0);
+  }
+  #mobile-menu-overlay.is-visible {
+    display: block;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mainHeader = document.getElementById('main-header');
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const closeMenuButton = document.getElementById('close-menu-button');
+
+    // --- Sabit Header Mantığı ---
+    if (mainHeader) {
+      const stickyPoint = 50;
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > stickyPoint) {
+          mainHeader.classList.add('is-sticky');
+          document.body.classList.add('header-is-sticky');
+        } else {
+          mainHeader.classList.remove('is-sticky');
+          document.body.classList.remove('header-is-sticky');
+        }
+      }, { passive: true });
+    }
+
+    // --- Yandan Açılan Menü Mantığı ---
+    const openMenu = () => {
+      if (mobileMenuPanel) mobileMenuPanel.classList.add('is-open');
+      if (mobileMenuOverlay) mobileMenuOverlay.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeMenu = () => {
+      if (mobileMenuPanel) mobileMenuPanel.classList.remove('is-open');
+      if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('is-visible');
+      document.body.style.overflow = '';
+    };
+
+    if (menuToggle) menuToggle.addEventListener('click', openMenu);
+    if (closeMenuButton) closeMenuButton.addEventListener('click', closeMenu);
+    if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', closeMenu);
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenuPanel && mobileMenuPanel.classList.contains('is-open')) {
+        closeMenu();
+      }
+    });
+  });
+</script>

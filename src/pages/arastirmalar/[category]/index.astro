@@ -1,0 +1,124 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('arastirmalar');
+  const uniqueCategories = [...new Set(allPosts.map(post => post.slug.split('/')[0]))];
+
+  return uniqueCategories.map(category => {
+    return {
+      params: { category },
+    };
+  });
+}
+
+const { category } = Astro.params;
+
+if (!category) {
+    return new Response(null, {
+        status: 404,
+        statusText: 'Not Found'
+    });
+}
+
+const allPosts = await getCollection('arastirmalar', ({ id }) => {
+  return id.startsWith(category);
+});
+
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categoryNames: { [key: string]: string } = {
+  'anayasa-hukuku': 'Anayasa Hukuku',
+  'ceza-hukuku': 'Ceza Hukuku',
+  'idare-hukuku': 'İdare Hukuku',
+  'medeni-hukuk': 'Medeni Hukuk',
+};
+
+const pageTitle = `${categoryNames[category] || 'Araştırmalar'}`;
+const pageDescription = `Hukuk alanındaki derinlemesine akademik çalışmalar, makaleler ve hukuki analizler. Kategori: ${pageTitle}`;
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('tr-TR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-green-600 to-green-800 text-white py-16">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">{pageTitle}</h1>
+        <p class="text-xl text-green-100 max-w-2xl mx-auto">
+          Bu alanda yayınlanan tüm akademik çalışmalarım ve makalelerim
+        </p>
+      </div>
+    </section>
+
+    <!-- Blog Posts -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedPosts.map((post) => (
+          <a href={`/arastirmalar/${post.slug}`} class="block hover:text-green-600 transition-colors group">
+            <article class="bg-white rounded-xl shadow-lg overflow-hidden h-full group-hover:shadow-xl transition-shadow">
+              {post.data.heroImage && (
+                <div class="aspect-video overflow-hidden">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}${post.data.heroImage.startsWith('/') ? '' : '/'}${post.data.heroImage}`} 
+                    alt={post.data.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              )}
+              
+              <div class="p-6 flex flex-col">
+                <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors">
+                    {post.data.title}
+                </h2>
+
+                <p class="text-gray-600 mb-4 line-clamp-3">
+                  {post.data.description}
+                </p>
+
+                <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+                    <time>{formatDate(post.data.pubDate)}</time>
+                    <span class="font-semibold">Devamını Oku &rarr;</span>
+                </div>
+              </div>
+            </article>
+          </a>
+        ))}
+      </div>
+       <div class="text-center mt-12">
+        <a href="/arastirmalar" class="text-green-600 hover:text-green-800 font-semibold transition-colors">
+          &larr; Tüm Kategorilere Geri Dön
+        </a>
+      </div>
+    </main>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const pageTitle = "Yasal Uyarı";
+const pageDescription = "Bu web sitesinde yer alan bilgilerin kullanımına ilişkin önemli yasal bilgilendirme ve sorumluluk reddi beyanı.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-gray-700 to-gray-900 text-white py-16">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Yasal Uyarı</h1>
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+          Bu web sitesinde yer alan bilgilerin kullanımına ilişkin önemli yasal bilgilendirme.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-16">
+      <div class="bg-white p-8 md:p-12 rounded-xl shadow-lg prose prose-lg max-w-none">
+        <h2>Bilgilendirme Amaçlı İçerik</h2>
+        <p>
+        Bu internet sitesinde yer alan tüm içerikler, tamamen kişisel görüş ve çalışmalarımı yansıtmaktadır.
+Hukuk fakültesi öğrencisi olarak bilgilendirme amacıyla paylaşılmıştır; hukuki danışmanlık veya profesyonel hukuki yardım niteliğinde değildir.
+
+İçeriklerin güncelliği, doğruluğu veya eksiksiz olması garanti edilmez. Buradaki yazılarla hareket edilmesi sonucu doğabilecek herhangi bir sorumluluk kabul edilmez.
+
+Site içerisindeki metin, makale, yorum ve görsellerin izinsiz ticari kullanımı yasaktır; bilimsel veya akademik amaçlı kullanımlarda kaynak gösterilmesi rica olunur
+        </p>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

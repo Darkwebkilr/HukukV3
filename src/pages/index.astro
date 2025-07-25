@@ -1,11 +1,186 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const pageTitle = "Ana Sayfa";
+const pageDescription = "Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi Enes Sevinç'in kişisel web sitesi. Ceza ve özel hukuk alanlarındaki blog yazılarını ve araştırmalarını keşfedin.";
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- 
+    Merhaba! Sitenizin ana sayfasını, gönderdiğiniz içerik ve talepleriniz doğrultusunda yeniden oluşturdum.
+    - Hero (karşılama) alanı dışındaki tüm görseller `<img>` etiketi ile değiştirildi.
+    - Görsel içeren kutulara (div) tıklandığında, görselin büyümesi (zoom) efekti eklendi.
+    - Lütfen aşağıdaki `src` yollarında belirtilen görselleri `public/images/` klasörüne eklediğinizden emin olun.
+      Örnek: public/images/hero-background.jpg
+  -->
+  <div
+    class="relative flex size-full min-h-screen flex-col bg-gray-50 justify-between group/design-root overflow-x-hidden"
+    style='font-family: "Public Sans", "Noto Sans", sans-serif;'
+  >
+    <div>
+      <Header />
+      <div class="@container">
+        <div class="@[480px]:p-4">
+          <div
+            class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
+            style={`background-image: linear-gradient(rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%), url("${import.meta.env.BASE_URL}/images/main.png"); background-position: center;`}
+          >
+            <div class="flex flex-col gap-2 text-center">
+              <h1
+                class="text-white text-6xl font-black leading-tight tracking-[-0.033em] @[480px]:text-7xl animate-fade-in-up"
+              >
+                Enes Sevinc
+              </h1>
+              <h2 class="text-white text-lg font-normal leading-normal @[480px]:text-xl animate-fade-in-up animation-delay-300">"Güçlü adalet, güvenli gelecek."</h2>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Araştırma</h2>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+        <!-- Araştırma Kartı 1 -->
+        <a href="/arastirmalar/ceza-hukuku" class="flex flex-col gap-3 pb-3 group">
+          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
+            <img src={`${import.meta.env.BASE_URL}/images/Ceza Hukuk.png`} alt="Ceza Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+          </div>
+          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">Ceza Hukuku</p>
+        </a>
+        <!-- Araştırma Kartı 2 -->
+        <a href="/arastirmalar/medeni-hukuk" class="flex flex-col gap-3 pb-3 group">
+          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
+            <img src={`${import.meta.env.BASE_URL}/images/medeni hukuk.png`} alt="Medeni Hukuk" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+          </div>
+          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">Medeni Hukuk</p>
+        </a>
+        <!-- Araştırma Kartı 3 -->
+        <a href="/arastirmalar/idare-hukuku" class="flex flex-col gap-3 pb-3 group">
+          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
+            <img src={`${import.meta.env.BASE_URL}/images/İdari Hukuk.png`} alt="İdare Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+          </div>
+          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">İdare Hukuku</p>
+        </a>
+        <!-- Araştırma Kartı 4 -->
+        <a href="/arastirmalar/anayasa-hukuku" class="flex flex-col gap-3 pb-3 group">
+          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
+            <img src={`${import.meta.env.BASE_URL}/images/anayasa-hukuku.png`} alt="Anayasa Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+          </div>
+          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">Anayasa Hukuku</p>
+        </a>
+      </div>
+      <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Blog</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+        <!-- Blog Yazısı 1 -->
+        <a href="/blog/tarimsal-arazilerde-imar-ve-hukuki-surecler" class="block group">
+          <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1">
+              <img src={`${import.meta.env.BASE_URL}/images/blog1.png`} alt="Tarım Arazileri" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+            </div>
+            <div class="p-4">
+              <p class="text-[#5e7387] text-sm font-normal leading-normal">7 dakikalık okuma</p>
+              <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600">Tarımsal Arazilerde İmar ve Hukuki Süreçler</p>
+              <p class="text-[#5e7387] text-sm font-normal leading-normal mt-2">Toprak, insan yaşamı için vazgeçilmez bir kaynaktır. Bu yazıda, tarım arazilerinin korunması...</p>
+            </div>
+          </div>
+        </a>
+        <!-- Blog Yazısı 2 -->
+        <a href="/blog/turk-miras-hukuku-temelleri" class="block group">
+          <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1">
+              <img src={`${import.meta.env.BASE_URL}/images/blog2.png`} alt="Miras Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+            </div>
+            <div class="p-4">
+              <p class="text-[#5e7387] text-sm font-normal leading-normal">10 dakikalık okuma</p>
+              <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600">Türk Miras Hukuku Temelleri</p>
+              <p class="text-[#5e7387] text-sm font-normal leading-normal mt-2">Miras, bir kişinin ölümüyle birlikte, onun malvarlığının mirasçılarına intikal etmesi sürecini ifade eder...</p>
+            </div>
+          </div>
+        </a>
+        <!-- Blog Yazısı 3 -->
+        <a href="/blog/gayrimenkul-satislarinda-tapu-islemleri" class="block group">
+          <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+            <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1">
+              <img src={`${import.meta.env.BASE_URL}/images/blog3.png`} alt="Gayrimenkul Satışları" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+            </div>
+            <div class="p-4">
+              <p class="text-[#5e7387] text-sm font-normal leading-normal">8 dakikalık okuma</p>
+              <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600">Gayrimenkul Satışlarında Tapu İşlemleri</p>
+              <p class="text-[#5e7387] text-sm font-normal leading-normal mt-2">
+                Türkiye’de bireylerin en önemli malvarlığı unsurlarından biri taşınmazlardır. Tapuda yapılan işlemler...
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Hakkımda Bölümü -->
+      <section class="bg-white my-16 p-8 rounded-xl shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+          <!-- Sol Taraf: Yazı -->
+          <div class="md:col-span-2">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Enes Sevinç</h2>
+            <p class="text-gray-700 leading-relaxed mb-6">
+              Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi olarak, ceza ve özel hukuk alanlarına duyduğum özel ilgiyle teorik bilgimi pratikle birleştiriyorum. Takım çalışmasına yatkın, araştırmayı seven ve sorumluluk almaktan çekinmeyen bir yaklaşımla müvekkillerime en iyi hizmeti sunmayı hedefliyorum.
+            </p>
+            <a href="/hakkimizda" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+              Daha Fazlasını Oku
+            </a>
+          </div>
+          <!-- Sağ Taraf: Fotoğraf -->
+          <div class="flex justify-center">
+            <img src={`${import.meta.env.BASE_URL}/images/profil-foto.jpg`} alt="Enes Sevinç" class="w-48 h-48 object-cover rounded-full shadow-md">
+          </div>
+        </div>
+      </section>
+    </div>
+    </div>
+    <div>
+      <Footer />
+    </div>
+  </div>
 </Layout>
+
+<style>
+  .image-container img.zoomed {
+    transform: scale(1.2);
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Image zoom functionality
+    const imageContainers = document.querySelectorAll('.image-container');
+    imageContainers.forEach(container => {
+      container.addEventListener('click', () => {
+        const img = container.querySelector('img');
+        if (img) {
+          img.classList.toggle('zoomed');
+        }
+      });
+    });
+
+    
+  });
+</script>

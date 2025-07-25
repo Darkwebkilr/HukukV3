@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('arastirmalar');
+  return allPosts.map(entry => {
+    const slugParts = entry.slug.split('/');
+    const category = slugParts[0];
+    // Handle index pages (e.g., 'anayasa-hukuku/index.md' -> slug: 'anayasa-hukuku')
+    // and regular pages (e.g., 'anayasa-hukuku/bireysel-basvuru.md' -> slug: 'anayasa-hukuku/bireysel-basvuru')
+    const slug = slugParts.length > 1 ? slugParts[1] : 'index'; 
+
+    return {
+      params: { category, slug },
+      props: { entry },
+    };
+  });
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const pageTitle = entry.data.title;
+const pageDescription = entry.data.description;
+
+const categoryNames: { [key: string]: string } = {
+  'anayasa-hukuku': 'Anayasa Hukuku',
+  'ceza-hukuku': 'Ceza Hukuku',
+  'idare-hukuku': 'İdare Hukuku',
+  'medeni-hukuk': 'Medeni Hukuk',
+};
+
+const categoryName = categoryNames[entry.slug.split('/')[0]] || 'Araştırma';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <main class="max-w-4xl mx-auto px-4 py-8 md:py-12">
+      <article class="bg-white rounded-2xl shadow-xl p-6 md:p-10">
+        
+        <div class="mb-8 text-center">
+            <a href={`/arastirmalar/${entry.slug.split('/')[0]}`} class="text-green-600 hover:text-green-800 font-semibold transition-colors">
+                {categoryName}
+            </a>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">{entry.data.title}</h1>
+            <p class="text-gray-500 mt-4 text-lg">{entry.data.description}</p>
+            <time class="block text-sm text-gray-400 mt-4">{entry.data.pubDate.toLocaleDateString('tr-TR', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+        </div>
+
+        {entry.data.heroImage && (
+          <div class="aspect-video rounded-lg overflow-hidden mb-8 shadow-lg">
+            <img 
+              src={`${import.meta.env.BASE_URL}${entry.data.heroImage.startsWith('/') ? '' : '/'}${entry.data.heroImage}`} 
+              alt={entry.data.title}
+              class="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        <div class="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-800 prose-a:text-green-600 hover:prose-a:text-green-800 prose-strong:font-semibold">
+          <Content />
+        </div>
+
+      </article>
+
+      <div class="text-center mt-12">
+        <a href={`/arastirmalar/${entry.slug.split('/')[0]}`} class="text-green-600 hover:text-green-800 font-semibold transition-colors">
+          &larr; {categoryName} Kategorisine Geri Dön
+        </a>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>

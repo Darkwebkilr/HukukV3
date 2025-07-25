@@ -1,22 +1,87 @@
+---
+import "../styles/global.css";
+
+export interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="tr">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<meta name="description" content={description} />
+
+		<!-- Fonts -->
+		<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com/"
+			crossorigin=""
+		/>
+		<link
+			rel="stylesheet"
+			as="style"
+			onload="this.rel='stylesheet'"
+			href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&family=Public+Sans%3Awght%40400%3B500%3B700%3B900"
+		/>
+
+		<title>{title} - Enes Sevinç</title>
 	</head>
 	<body>
 		<slot />
+
+		<!-- Sabit Telefon Butonu -->
+		<a href="tel:+905396502409" class="fixed bottom-6 right-6 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg transition-transform transform hover:scale-110">
+			<span class="sr-only">Telefonla Ara</span>
+			<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+				<path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+			</svg>
+		</a>
+
+		<!-- Yukarı Kaydır Butonu -->
+		<button id="scroll-to-top" class="hidden fixed bottom-24 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gray-700 text-white shadow-lg transition-opacity duration-300 hover:bg-gray-800">
+			<span class="sr-only">Yukarı Kaydır</span>
+			<svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+				<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414l-3-3z" clip-rule="evenodd"></path>
+			</svg>
+		</button>
 	</body>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const scrollToTopButton = document.getElementById('scroll-to-top');
+
+			if (scrollToTopButton) {
+				// Butonu göster/gizle
+				window.addEventListener('scroll', () => {
+					if (window.scrollY > 200) {
+						scrollToTopButton.classList.remove('hidden');
+					} else {
+						scrollToTopButton.classList.add('hidden');
+					}
+				}, { passive: true });
+
+				// Tıklandığında yukarı kaydır
+				scrollToTopButton.addEventListener('click', () => {
+					window.scrollTo({
+						top: 0,
+						behavior: 'smooth'
+					});
+				});
+			}
+		});
+	</script>
 </html>
 
 <style>
 	html,
 	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
+		
 	}
 </style>

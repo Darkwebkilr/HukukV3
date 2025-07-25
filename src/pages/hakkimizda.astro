@@ -1,0 +1,136 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const pageTitle = "Hakkımda";
+const pageDescription = "Enes Sevinç'in eğitim hayatı, çalışma geçmişi, becerileri ve planladığı sertifika programları hakkında detaylı bilgi edinin.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Hakkımda</h1>
+        <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+          Takım çalışmasına uyumlu, araştırmayı seven ve sorumluluk almaktan çekinmeyen bir hukuk öğrencisi.
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-16">
+      <!-- About Section -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">Enes Sevinç</h2>
+          <div class="space-y-4 text-gray-700 leading-relaxed">
+            <p>
+              Kırklareli Üniversitesi Hukuk Fakültesi 3. sınıf öğrencisiyim. Ceza ve özel hukuk alanlarına özel ilgi duymaktayım. Teorik bilgimi pratikle destekleyerek staj ve seminerlerle kendimi geliştirmekteyim. 
+            </p>
+            <p>
+              Takım çalışmasına uyumlu, araştırmayı seven ve sorumluluk almaktan çekinmeyen bir öğrenciyim.
+            </p>
+          </div>
+        </div>
+        <div class="rounded-xl overflow-hidden shadow-lg">
+          <img src={`${import.meta.env.BASE_URL}/images/profil-foto.jpg`} alt="Enes Sevinç Profil Fotoğrafı" class="w-full h-full object-cover">
+        </div>
+      </section>
+
+      <!-- Experience & Skills Section -->
+      <section class="mb-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <!-- Çalışma Geçmişi -->
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Çalışma Geçmişim</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg h-full">
+              <h3 class="text-xl font-semibold text-gray-900">Şahin Hukuk Bürosu</h3>
+              <p class="text-blue-600 font-medium mb-4">Stajyer Avukat (Mart 2025)</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-600">
+                <li>Stajyer avukata destek sağlandı.</li>
+                <li>Dava dosyalarının incelenmesi ve dilekçe taslaklarının hazırlanmasına destek olundu.</li>
+                <li>İcra ve ceza hukuku süreçlerine gözlemci olarak katılım sağlandı.</li>
+                <li>UYAP üzerinden dosya takibi ve evrak düzenleme görevlerinde bulunuldu.</li>
+              </ul>
+            </div>
+          </div>
+          <!-- Beceriler -->
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Becerilerim</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg h-full">
+              <ul class="list-disc list-inside space-y-3 text-gray-700 text-lg">
+                <li>MS Office</li>
+                <li>Uyap Vatandaş Portalı</li>
+                <li>Hukuki Araştırma ve Mevzuat Tarama</li>
+                <li>Dilekçe Yazımı ve Temel Hukuki Yazışmalar</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Certificates & Activities Section -->
+      <section class="mb-20">
+        <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Sertifikalar ve Gönüllü Faaliyetler</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Sertifikalar -->
+          <div class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Sertifikalar ve Eğitimler</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-600">
+              <li>Avukat Katipliği Sertifikası (Temmuz 2025)</li>
+              <li>Hukuk Mesleklerine Giriş Sertifikası</li>
+            </ul>
+          </div>
+          <!-- Gönüllü Faaliyetler -->
+          <div class="bg-white rounded-xl shadow-lg p-8">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Kulüp ve Gönüllü Faaliyetler</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-600">
+              <li>Adalet Atölyesi – Yönetim Kurulu Üyesi</li>
+              <li>Hukuk Alanları Akademisi – Üniversite Temsilcisi</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Planned Education Section -->
+      <section class="bg-blue-50 rounded-2xl p-8 md:p-12">
+        <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Planlanan Eğitim ve Sertifikalar</h2>
+        <div class="space-y-10">
+          <!-- Kırklareli Üniversitesi -->
+          <div>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">🎓 Kırklareli Üniversitesi Sürekli Eğitim Merkezi (KLU-SEM)</h3>
+            <ul class="space-y-4 text-gray-700">
+              <li><strong>Emlak ve Gayrimenkul Hukuku Sertifikası:</strong> Emlak sektöründe hukuki çerçevenin kavranması ve tapu, satış, ipotek işlemlerine hâkimiyet.</li>
+              <li><strong>Emlak Müşavirliği Eğitimi Sertifikası:</strong> Taşınmaz danışmanlığı, pazarlama teknikleri, tapu işlemleri ve mesleki mevzuat eğitimi.</li>
+              <li><strong>Özlük İşleri, Bordrolama ve SGK İşlemleri Sertifikası:</strong> İş hukukuna uygun personel özlük dosyaları, bordro hesaplama ve SGK bildirgeleri.</li>
+              <li><strong>Kat Mülkiyeti Kanunu Semineri:</strong> Apartman, site yönetimi ve bağımsız bölümler üzerindeki hak ve yükümlülükler.</li>
+            </ul>
+          </div>
+          <!-- İstanbul Üniversitesi -->
+          <div>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">🎓 İstanbul Üniversitesi Sürekli Eğitim Merkezi (İÜSEM)</h3>
+            <ul class="space-y-4 text-gray-700">
+              <li><strong>KVKK Eğitimi Sertifika Programı:</strong> 6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında veri sorumluluğu, açık rıza ve idari yaptırımlar.</li>
+            </ul>
+          </div>
+          <!-- Udemy -->
+          <div>
+            <h3 class="text-2xl font-semibold text-gray-800 mb-4">🌐 Udemy Eğitim Platformu</h3>
+            <ul class="space-y-4 text-gray-700">
+              <li><strong>İş Planı Hazırlama ve Girişimcilik Eğitimi:</strong> Girişim fikrinin iş modeline dönüşmesi, finansal planlama ve yatırımcı sunumu.</li>
+              <li><strong>Genel Muhasebe Eğitimi:</strong> Tekdüzen hesap planı, yevmiye defteri, bilanço ve gelir tablosu uygulamaları.</li>
+              <li><strong>Sıfırdan İleri Düzey Ön Muhasebe Eğitimi:</strong> Fatura, irsaliye, çek-senet işlemleri, cari hesap ve muhasebe programları.</li>
+              <li><strong>Marka Hukuku Eğitimi:</strong> Marka başvuru süreci, tescil, koruma, itiraz ve iptal prosedürleri.</li>
+              <li><strong>Sözleşme Hazırlama ve İnceleme Eğitimi:</strong> Türk Borçlar Kanunu ışığında sözleşme türleri, şartlar, yorumlama ve iptal halleri.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </div>
+</Layout>

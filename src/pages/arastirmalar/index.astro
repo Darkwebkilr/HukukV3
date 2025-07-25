@@ -1,0 +1,98 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const pageTitle = "Araştırma Alanları";
+const pageDescription = "Hukukun farklı dallarında yürüttüğümüz akademik ve pratik araştırmaların ana kategorileri.";
+
+const categories = [
+  {
+    slug: 'anayasa-hukuku',
+    title: 'Anayasa Hukuku',
+    description: 'Devletin temel yapısı, hak ve özgürlükler ve anayasal denetim üzerine araştırmalar.',
+    heroImage: '/images/anayasa-hukuku.png'
+  },
+  {
+    slug: 'ceza-hukuku',
+    title: 'Ceza Hukuku',
+    description: 'Suç ve ceza kavramları, ceza sorumluluğu ve ceza yargılaması süreçleri üzerine incelemeler.',
+    heroImage: '/images/Ceza Hukuk.png'
+  },
+  {
+    slug: 'idare-hukuku',
+    title: 'İdare Hukuku',
+    description: 'İdarenin işleyişi, idari işlemler, idari yargı ve kamu hizmetleri hakkındaki çalışmalar.',
+    heroImage: '/images/İdari Hukuk.png'
+  },
+  {
+    slug: 'medeni-hukuk',
+    title: 'Medeni Hukuk',
+    description: 'Kişiler, aile, miras ve eşya hukuku gibi özel hukuk ilişkilerini düzenleyen temel ilkelere dair araştırmalar.',
+    heroImage: '/images/medeni hukuk.png'
+  }
+];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-green-600 to-green-800 text-white py-16">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Araştırma Alanlarım</h1>
+        <p class="text-xl text-green-100 max-w-2xl mx-auto">
+          Hukukun farklı dallarında yürüttüğüm akademik ve pratik araştırmalar
+        </p>
+      </div>
+    </section>
+
+    <!-- Category Grid -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        {categories.map((category) => (
+          <a href={`/arastirmalar/${category.slug}`} class="block hover:text-green-600 transition-colors group">
+            <article class="bg-white rounded-xl shadow-lg overflow-hidden h-full group-hover:shadow-xl transition-shadow">
+              {category.heroImage && (
+                <div class="aspect-video overflow-hidden">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}${category.heroImage.startsWith('/') ? '' : '/'}${category.heroImage}`} 
+                    alt={category.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              )}
+              
+              <div class="p-6 flex flex-col">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">
+                    {category.title}
+                </h2>
+
+                <p class="text-gray-600 mb-4 line-clamp-3">
+                  {category.description}
+                </p>
+
+                <div class="mt-auto">
+                    <span class="font-semibold text-green-600">
+                        Yazıları Görüntüle &rarr;
+                    </span>
+                </div>
+              </div>
+            </article>
+          </a>
+        ))}
+      </div>
+    </main>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

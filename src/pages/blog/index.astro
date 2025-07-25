@@ -1,0 +1,144 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const pageTitle = "Blog";
+const pageDescription = "Hukuk dünyasından güncel gelişmeler, pratik bilgiler ve uzman görüşleri içeren makaleler.";
+
+// 1. Fetch data from WordPress API
+const response = await fetch('https://enessevinc.com/wp-json/wp/v2/posts?_embed');
+const posts = await response.json();
+
+// Helper function to decode HTML entities
+function decode(str: string) {
+    return str.replace(/&#(\d+);/g, (match, dec) => {
+        return String.fromCharCode(dec);
+    });
+}
+
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('tr-TR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+    <Header />
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+      <div class="max-w-6xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
+        <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+          Hukuk dünyasından güncel gelişmeler, pratik bilgiler ve görüşlerimi paylaşıyorum.
+        </p>
+      </div>
+    </section>
+
+    <!-- Blog Posts -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {posts.map((post) => {
+          const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+          const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Genel';
+          const author = post._embedded?.author?.[0]?.name || 'Enes Sevinç';
+
+          return (
+            <a href={`/blog/${post.slug}`} class="block hover:text-blue-600 transition-colors group">
+              <article class="bg-white rounded-xl shadow-lg overflow-hidden h-full group-hover:shadow-xl transition-shadow">
+                {featuredImage && (
+                  <div class="aspect-video overflow-hidden">
+                    <img 
+                      src={featuredImage} 
+                      alt={decode(post.title.rendered)}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                
+                <div class="p-6 flex flex-col">
+                  <!-- Category & Reading Time -->
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
+                      {category.toUpperCase()}
+                    </span>
+                  </div>
+
+                  <!-- Title -->
+                  <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors" set:html={post.title.rendered} />
+
+                  <!-- Description -->
+                  {post.excerpt.rendered && (
+                    <div class="text-gray-600 mb-4 line-clamp-3" set:html={post.excerpt.rendered.replace(/<a.*>.*<\/a>/, '')} />
+                  )}
+
+                  <!-- Meta Info -->
+                  <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+                    <div class="flex items-center space-x-2">
+                      <span>{author}</span>
+                      <span>•</span>
+                      <time>{formatDate(post.date)}</time>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </a>
+          )
+        })}
+      </div>
+
+      <!-- Load More Button (for future pagination) -->
+      <div class="text-center mt-12">
+        <button class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+          Daha Fazla Yükle
+        </button>
+      </div>
+    </main>
+
+    <!-- Newsletter Section -->
+    <section class="bg-gray-100 py-16">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Güncel Kalın</h2>
+        <p class="text-gray-600 mb-8">
+          Hukuk dünyasından son gelişmeleri e-posta ile alın
+        </p>
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <input 
+            type="email" 
+            placeholder="E-posta adresiniz"
+            class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button 
+            type="submit"
+            class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Abone Ol
+          </button>
+        </form>
+      </div>
+    </section>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
