@@ -14,7 +14,13 @@ const { title, description } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/png" href="/favicon.png" />
+		
+		<!-- Favicon Meta Tags -->
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+		<link rel="shortcut icon" href="/favicon.png">
+		
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 
