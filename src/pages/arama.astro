@@ -1,40 +1,90 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getCollection } from 'astro:content';
 
-// Define a more specific type for our processed posts to ensure type safety
-type ProcessedPost = (CollectionEntry<'blog'> | CollectionEntry<'arastirmalar'>) & {
-  url: string;
-  type: 'blog' | 'arastirmalar';
-};
+// Helper function to fetch all items from a paginated WordPress API endpoint
+async function fetchAllFromWp(endpoint) {
+  let allItems = [];
+  let page = 1;
+  let totalPages = 1;
+  while (page <= totalPages) {
+    const response = await fetch(`${endpoint}?per_page=100&page=${page}&_embed`);
+    const totalPagesHeader = response.headers.get('X-WP-TotalPages');
+    if (totalPagesHeader) {
+      totalPages = parseInt(totalPagesHeader, 10);
+    }
+    const items = await response.json();
+    if (items && items.length > 0) {
+      allItems = allItems.concat(items);
+    } else {
+      break;
+    }
+    page++;
+  }
+  return allItems;
+}
+
+// Helper function to decode HTML entities for titles, etc.
+function decode(str: string) {
+    if (!str) return '';
+    return str.replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
+}
+
+// Helper function to strip HTML tags for searching in content/excerpt
+function stripHtml(html: string) {
+    if (!html) return '';
+    return html.replace(/<[^>]*>?/gm, '');
+}
 
 const query = Astro.url.searchParams.get('q');
-
-const blogPosts = await getCollection('blog');
-const arastirmalarPosts = await getCollection('arastirmalar');
-
-let filteredPosts: ProcessedPost[] = [];
+let filteredPosts = [];
 
 if (query) {
+  // Fetch all data needed for the search
+  const [posts, allCategories] = await Promise.all([
+    fetchAllFromWp('https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts'),
+    fetchAllFromWp('https://n6j.7b0.myftpupload.com/wp-json/wp/v2/categories')
+  ]);
+
+  const arastirmalarParent = allCategories.find(c => c.slug === 'arastirmalar');
+  const arastirmalarParentId = arastirmalarParent ? arastirmalarParent.id : null;
+  const researchCategoryIds = arastirmalarParentId
+    ? allCategories.filter(c => c.parent === arastirmalarParentId).map(c => c.id)
+    : [];
+
+  // Process all posts into a unified search format
+  const allContent = posts.map(post => {
+    const postIsResearch = post.categories.some(catId => researchCategoryIds.includes(catId));
+    let type = 'blog';
+    let url = `/blog/${post.slug}`;
+
+    if (postIsResearch) {
+      const categoryId = post.categories.find(catId => researchCategoryIds.includes(catId));
+      const categoryDetails = allCategories.find(c => c.id === categoryId);
+      if (categoryDetails) {
+        type = 'arastirmalar';
+        url = `/arastirmalar/${categoryDetails.slug}/${post.slug}`;
+      }
+    }
+
+    return {
+      title: decode(post.title.rendered),
+      description: stripHtml(decode(post.excerpt.rendered)),
+      content: stripHtml(decode(post.content.rendered)),
+      url: url,
+      type: type,
+      pubDate: new Date(post.date),
+      heroImage: post._embedded?.['wp:featuredmedia']?.[0]?.source_url
+    };
+  });
+
   const lowerCaseQuery = query.toLocaleLowerCase('tr-TR');
-
-  const allContent: ProcessedPost[] = [
-    ...blogPosts.map(post => ({ ...post, type: 'blog' as const, url: `/blog/${post.slug}` })),
-    ...arastirmalarPosts.map(post => ({ ...post, type: 'arastirmalar' as const, url: `/arastirmalar/${post.slug}` }))
-  ];
-
+  
   filteredPosts = allContent.filter((post) => {
-    // Safely access and search text content, providing empty fallbacks
-    const title = (post.data.title ?? '').toLocaleLowerCase('tr-TR');
-    const description = (post.data.description ?? '').toLocaleLowerCase('tr-TR');
-    const body = (post.body ?? '').toLocaleLowerCase('tr-TR');
-    
-    return title.includes(lowerCaseQuery) || 
-           description.includes(lowerCaseQuery) || 
-           body.includes(lowerCaseQuery);
+    return post.title.toLocaleLowerCase('tr-TR').includes(lowerCaseQuery) ||
+           post.description.toLocaleLowerCase('tr-TR').includes(lowerCaseQuery) ||
+           post.content.toLocaleLowerCase('tr-TR').includes(lowerCaseQuery);
   });
 }
 
@@ -47,7 +97,7 @@ function formatDate(date: Date): string {
 }
 ---
 
-<Layout>
+<Layout title={`Arama Sonuçları: ${query || ''}`}>
   <div class="min-h-screen bg-gray-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
     <Header />
 
@@ -69,27 +119,25 @@ function formatDate(date: Date): string {
                 {filteredPosts.map((post) => (
                   <a href={post.url} class="block hover:text-blue-600 transition-colors group">
                     <article class="bg-gray-50 rounded-xl shadow-md overflow-hidden h-full group-hover:shadow-lg transition-shadow">
-                      {post.data.heroImage && (
+                      {post.heroImage && (
                         <div class="aspect-video overflow-hidden">
                           <img 
-                            src={post.data.heroImage} 
-                            alt={post.data.title}
+                            src={post.heroImage} 
+                            alt={post.title}
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
                       )}
                       <div class="p-6 flex flex-col">
-                        <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                            {post.data.title}
+                        <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors" set:html={post.title}>
                         </h2>
-                        <p class="text-gray-600 mb-4 line-clamp-3 text-sm">
-                          {post.data.description}
+                        <p class="text-gray-600 mb-4 line-clamp-3 text-sm" set:html={post.description}>
                         </p>
                         <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
                           <span class="inline-block px-3 py-1 text-xs font-semibold text-purple-600 bg-purple-100 rounded-full">
                             {post.type === 'blog' ? 'BLOG' : 'ARAŞTIRMA'}
                           </span>
-                          <time>{formatDate(post.data.pubDate)}</time>
+                          <time>{formatDate(post.pubDate)}</time>
                         </div>
                       </div>
                     </article>

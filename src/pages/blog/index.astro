@@ -6,12 +6,34 @@ import Footer from '../../components/Footer.astro';
 const pageTitle = "Blog";
 const pageDescription = "Hukuk dünyasından güncel gelişmeler, pratik bilgiler ve uzman görüşleri içeren makaleler.";
 
-// 1. Fetch data from WordPress API
-const response = await fetch('https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts?_embed');
-const posts = await response.json();
+// Helper function to fetch all items from a paginated WordPress API endpoint
+async function fetchAllFromWp(endpoint) {
+  let allItems = [];
+  let page = 1;
+  let totalPages = 1;
+  while (page <= totalPages) {
+    const response = await fetch(`${endpoint}?per_page=100&page=${page}&_embed`);
+    const totalPagesHeader = response.headers.get('X-WP-TotalPages');
+    if (totalPagesHeader) {
+      totalPages = parseInt(totalPagesHeader, 10);
+    }
+    const items = await response.json();
+    if (items && items.length > 0) {
+      allItems = allItems.concat(items);
+    } else {
+      break;
+    }
+    page++;
+  }
+  return allItems;
+}
+
+// Fetch all posts without any filtering
+const posts = await fetchAllFromWp('https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts');
 
 // Helper function to decode HTML entities
 function decode(str: string) {
+    if (!str) return '';
     return str.replace(/&#(\d+);/g, (match, dec) => {
         return String.fromCharCode(dec);
     });
@@ -46,11 +68,15 @@ function formatDate(dateString: string) {
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         {posts.map((post) => {
           const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+          // Display the first category as a label, but don't let it affect the logic
           const category = post._embedded?.['wp:term']?.[0]?.[0]?.name || 'Genel';
           const author = post._embedded?.author?.[0]?.name || 'Enes Sevinç';
 
+          // All links on this page should point to the /blog/ path
+          const postUrl = `/blog/${post.slug}`;
+
           return (
-            <a href={`/blog/${post.slug}`} class="block hover:text-blue-600 transition-colors group">
+            <a href={postUrl} class="block hover:text-blue-600 transition-colors group">
               <article class="bg-white rounded-xl shadow-lg overflow-hidden h-full group-hover:shadow-xl transition-shadow">
                 {featuredImage && (
                   <div class="aspect-video overflow-hidden">
@@ -63,22 +89,18 @@ function formatDate(dateString: string) {
                 )}
                 
                 <div class="p-6 flex flex-col">
-                  <!-- Category & Reading Time -->
                   <div class="flex items-center justify-between mb-3">
                     <span class="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full">
                       {category.toUpperCase()}
                     </span>
                   </div>
 
-                  <!-- Title -->
                   <h2 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors" set:html={post.title.rendered} />
 
-                  <!-- Description -->
                   {post.excerpt.rendered && (
                     <div class="text-gray-600 mb-4 line-clamp-3" set:html={post.excerpt.rendered.replace(/<a.*>.*<\/a>/, '')} />
                   )}
 
-                  <!-- Meta Info -->
                   <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
                     <div class="flex items-center space-x-2">
                       <span>{author}</span>
