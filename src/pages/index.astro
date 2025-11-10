@@ -1,21 +1,24 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 
 const pageTitle = "Ana Sayfa";
-const pageDescription = "Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi Enes Sevinç'in kişisel web sitesi. Ceza ve özel hukuk alanlarındaki blog yazılarını ve araştırmalarını keşfedin.";
+const pageDescription =
+  "Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi Enes Sevinç'in kişisel web sitesi. Ceza ve özel hukuk alanlarındaki blog yazılarını ve araştırmalarını keşfedin.";
 
 // Fetch latest 3 blog posts from WordPress
-const response = await fetch('https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts?per_page=3&_embed');
+const response = await fetch(
+  "https://n6j.7b0.myftpupload.com/wp-json/wp/v2/posts?per_page=3&_embed",
+);
 const latestPosts = await response.json();
 
 // Helper function to decode HTML entities
 function decode(str: string) {
-    if (!str) return '';
-    return str.replace(/&#(\d+);/g, (match, dec) => {
-        return String.fromCharCode(dec);
-    });
+  if (!str) return "";
+  return str.replace(/&#(\d+);/g, (match, dec) => {
+    return String.fromCharCode(dec);
+  });
 }
 ---
 
@@ -38,64 +41,145 @@ function decode(str: string) {
               >
                 Enes Sevinc
               </h1>
-              <h2 class="text-white text-lg font-normal leading-normal @[480px]:text-xl animate-fade-in-up animation-delay-300">"Güçlü adalet, güvenli gelecek."</h2>
+              <h2
+                class="text-white text-lg font-normal leading-normal @[480px]:text-xl animate-fade-in-up animation-delay-300"
+              >
+                "Güçlü adalet, güvenli gelecek."
+              </h2>
             </div>
-            
           </div>
         </div>
       </div>
-      <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Araştırma</h2>
-      <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+      <h2
+        class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+      >
+        Araştırma
+      </h2>
+      <div
+        class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4"
+      >
         <!-- Araştırma Kartı 1 -->
-        <a href="/arastirmalar/ceza-hukuku" class="flex flex-col gap-3 pb-3 group">
-          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
-            <img src={`/images/Ceza Hukuk.png`} alt="Ceza Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+        <a
+          href="/arastirmalar/ceza-hukuku"
+          class="flex flex-col gap-3 pb-3 group"
+        >
+          <div
+            class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer"
+          >
+            <img
+              src={`/images/Ceza Hukuk.png`}
+              alt="Ceza Hukuku"
+              class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+            />
           </div>
-          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">Ceza Hukuku</p>
+          <p
+            class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600"
+          >
+            Ceza Hukuku
+          </p>
         </a>
         <!-- Araştırma Kartı 2 -->
-        <a href="/arastirmalar/medeni-hukuk" class="flex flex-col gap-3 pb-3 group">
-          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
-            <img src={`/images/medeni hukuk.png`} alt="Medeni Hukuk" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+        <a
+          href="/arastirmalar/medeni-hukuk"
+          class="flex flex-col gap-3 pb-3 group"
+        >
+          <div
+            class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer"
+          >
+            <img
+              src={`/images/medeni hukuk.png`}
+              alt="Medeni Hukuk"
+              class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+            />
           </div>
-          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">Medeni Hukuk</p>
+          <p
+            class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600"
+          >
+            Medeni Hukuk
+          </p>
         </a>
         <!-- Araştırma Kartı 3 -->
-        <a href="/arastirmalar/idare-hukuku" class="flex flex-col gap-3 pb-3 group">
-          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
-            <img src={`/images/İdari Hukuk.png`} alt="İdare Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+        <a
+          href="/arastirmalar/idare-hukuku"
+          class="flex flex-col gap-3 pb-3 group"
+        >
+          <div
+            class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer"
+          >
+            <img
+              src={`/images/İdari Hukuk.png`}
+              alt="İdare Hukuku"
+              class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+            />
           </div>
-          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">İdare Hukuku</p>
+          <p
+            class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600"
+          >
+            İdare Hukuku
+          </p>
         </a>
         <!-- Araştırma Kartı 4 -->
-        <a href="/arastirmalar/anayasa-hukuku" class="flex flex-col gap-3 pb-3 group">
-          <div class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer">
-            <img src={`/images/anayasa-hukuku.png`} alt="Anayasa Hukuku" class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+        <a
+          href="/arastirmalar/anayasa-hukuku"
+          class="flex flex-col gap-3 pb-3 group"
+        >
+          <div
+            class="image-container w-full bg-gray-200 aspect-square rounded-xl overflow-hidden cursor-pointer"
+          >
+            <img
+              src={`/images/anayasa-hukuku.png`}
+              alt="Anayasa Hukuku"
+              class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+            />
           </div>
-          <p class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600">Anayasa Hukuku</p>
+          <p
+            class="text-[#111418] text-base font-medium leading-normal group-hover:text-blue-600"
+          >
+            Anayasa Hukuku
+          </p>
         </a>
       </div>
-      <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Blog</h2>
+      <h2
+        class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+      >
+        Blog
+      </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
-        {latestPosts.map(post => {
-          const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || `/images/blog${latestPosts.indexOf(post) + 1}.png`;
-          const title = decode(post.title.rendered);
-          const excerpt = decode(post.excerpt.rendered.replace(/<a.*>.*<\/a>/, ''));
+        {
+          latestPosts.map((post) => {
+            const featuredImage =
+              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+              `/images/blog${latestPosts.indexOf(post) + 1}.png`;
+            const title = decode(post.title.rendered);
+            const excerpt = decode(
+              post.excerpt.rendered.replace(/<a.*>.*<\/a>/, ""),
+            );
 
-          return (
-            <a href={`/blog/${post.slug}`} class="block group">
-              <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1 aspect-video">
-                  <img src={featuredImage} alt={title} class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105">
+            return (
+              <a href={`/blog/${post.slug}`} class="block group">
+                <div class="flex flex-col h-full bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                  <div class="image-container w-full rounded-t-xl overflow-hidden cursor-pointer flex-1 aspect-video">
+                    <img
+                      src={featuredImage}
+                      alt={title}
+                      class="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                    />
+                  </div>
+                  <div class="p-4">
+                    <p
+                      class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600"
+                      set:html={title}
+                    />
+                    <div
+                      class="text-[#5e7387] text-sm font-normal leading-normal mt-2 line-clamp-3"
+                      set:html={excerpt}
+                    />
+                  </div>
                 </div>
-                <div class="p-4">
-                  <p class="text-[#111418] text-base font-bold leading-tight group-hover:text-blue-600" set:html={title}></p>
-                  <div class="text-[#5e7387] text-sm font-normal leading-normal mt-2 line-clamp-3" set:html={excerpt}></div>
-                </div>
-              </div>
-            </a>
-          )
-        })}
+              </a>
+            );
+          })
+        }
       </div>
 
       <!-- Hakkımda Bölümü -->
@@ -105,23 +189,33 @@ function decode(str: string) {
           <div class="md:col-span-2">
             <h2 class="text-3xl font-bold text-gray-900 mb-4">Enes Sevinç</h2>
             <p class="text-gray-700 leading-relaxed mb-6">
-              Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi olarak, ceza ve özel hukuk alanlarına duyduğum özel ilgiyle teorik bilgimi pratikle birleştiriyorum. Takım çalışmasına yatkın, araştırmayı seven ve sorumluluk almaktan çekinmeyen bir yaklaşımla müvekkillerime en iyi hizmeti sunmayı hedefliyorum.
+              Kırklareli Üniversitesi Hukuk Fakültesi öğrencisi olarak, ceza ve
+              özel hukuk alanlarına duyduğum özel ilgiyle teorik bilgimi
+              pratikle birleştiriyorum. Takım çalışmasına yatkın, araştırmayı
+              seven ve sorumluluk almaktan çekinmeyen bir yaklaşımla
+              müvekkillerime en iyi hizmeti sunmayı hedefliyorum.
             </p>
-            <a href="/hakkimizda" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+            <a
+              href="/hakkimizda"
+              class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+            >
               Daha Fazlasını Oku
             </a>
           </div>
           <!-- Sağ Taraf: Fotoğraf -->
           <div class="flex justify-center">
-            <img src={`/images/profil-foto.jpg`} alt="Enes Sevinç" class="w-48 h-48 object-cover rounded-full shadow-md">
+            <img
+              src={`/images/profil-foto.jpg`}
+              alt="Enes Sevinç"
+              class="w-48 h-48 object-cover rounded-full shadow-md"
+            />
           </div>
         </div>
       </section>
     </div>
-    </div>
-    <div>
-      <Footer />
-    </div>
+  </div>
+  <div>
+    <Footer />
   </div>
 </Layout>
 
@@ -158,18 +252,16 @@ function decode(str: string) {
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     // Image zoom functionality
-    const imageContainers = document.querySelectorAll('.image-container');
-    imageContainers.forEach(container => {
-      container.addEventListener('click', () => {
-        const img = container.querySelector('img');
+    const imageContainers = document.querySelectorAll(".image-container");
+    imageContainers.forEach((container) => {
+      container.addEventListener("click", () => {
+        const img = container.querySelector("img");
         if (img) {
-          img.classList.toggle('zoomed');
+          img.classList.toggle("zoomed");
         }
       });
     });
-
-    
   });
 </script>

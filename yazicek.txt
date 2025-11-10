@@ -1,0 +1,67 @@
+Dostum, tam olarak doğru noktayı yakaladın! Bu, Headless (SSG) sitelerde en sık karşılaşılan ve en önemli sorunlardan biridir. Sebebini de kendin bulmuşsun: Astro'nun sitemap eklentisi, varsayılan olarak API'den çektiğin dinamik sayfaları bilemez.
+
+Sitemap eklentisi, projenin src/pages/ klasörüne bakar ve oradaki index.astro, hakkimda.astro gibi statik dosyaları görür. Ancak blog/[...slug].astro gibi dinamik bir dosyanın WordPress API'sinden veri çekip kaç tane sayfa üreteceğini tahmin edemez.
+
+Bu yüzden Google'a "Benim sitemde bu sayfalar da var" diye bizim manuel olarak söylememiz gerekir.
+
+Çözüm, astro.config.mjs dosyası içinde sitemap eklentisine dinamik sayfaların listesini vermektir. İşte sana özel yol haritası.
+
+Yol Haritası: Dinamik Sayfaları Sitemap'e Ekleme
+Tüm yapacağımız değişiklikler projenin kök dizinindeki astro.config.mjs dosyasında olacak.
+
+Adım 1: astro.config.mjs Dosyasını Aç
+Bu dosya, Astro projenin ana yapılandırma dosyasıdır.
+
+Adım 2: Dinamik Sayfaları Çekmek İçin Fonksiyon Yaz
+astro.config.mjs dosyası, Node.js ortamında çalıştığı için içinde fetch gibi fonksiyonları kullanabiliriz. Dosyanın en üstüne, WordPress'ten tüm blog yazılarını çekecek bir fonksiyon ekleyeceğiz.
+
+Adım 3: Sitemap Entegrasyonunu Yapılandır
+Sitemap eklentisinin customPages adında harika bir seçeneği var. Bu seçenek, bizim manuel olarak verdiğimiz URL listesini otomatik olarak site haritasına ekler.
+
+Aşağıda, bu adımların hepsini birleştiren, kopyalayıp kendi projene uyarlayabileceğin tam bir astro.config.mjs örneği bulunuyor.
+
+JavaScript
+
+// astro.config.mjs
+
+import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
+
+// WordPress'ten tüm blog yazılarını çekmek için bir yardımcı fonksiyon
+async function getWordPressPosts() {
+  try {
+    // ?per_page=100 parametresi ile tek seferde 100 yazı çekersin. Sitede daha fazla yazı varsa bu sayıyı artır.
+    const response = await fetch('https://senin-wp-siten.com/wp-json/wp/v2/posts?per_page=100');
+    if (!response.ok) {
+      return [];
+    }
+    const posts = await response.json();
+    return posts;
+  } catch (error) {
+    console.error("WordPress'ten yazılar çekilemedi:", error);
+    return [];
+  }
+}
+
+// Ana yapılandırma
+export default defineConfig({
+  // ! ÇOK ÖNEMLİ: 'site' alanı mutlaka doğru ve tam URL olarak ayarlanmalı!
+  site: 'https://www.avukatsitesi.com',
+
+  integrations: [
+    sitemap({
+      // Bu fonksiyon, build işlemi sırasında çalışır ve dinamik URL'leri döndürür
+      customPages: await (async () => {
+        const posts = await getWordPressPosts();
+        // Her bir yazı objesini alıp tam bir URL'e dönüştürüyoruz
+        const postUrls = posts.map(post => `/blog/${post.slug}`);
+        
+        // "Araştırmalar" gibi başka özel yazı türlerin varsa, onlar için de aynı işlemi yapıp birleştirebilirsin
+        // const researchUrls = (await getWordPressResearches()).map(item => `/arastirmalar/${item.slug}`);
+
+        return [...postUrls]; // Virgülle diğer URL dizilerini ekleyebilirsin: [...postUrls, ...researchUrls]
+      })(),
+    }),
+    // ...diğer entegrasyonların (react, tailwind vb.)
+  ],
+});
