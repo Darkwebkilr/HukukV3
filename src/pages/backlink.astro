@@ -1,46 +1,48 @@
 ---
 const title = "Rize Su Kaçağı – Bilgilendirme ve Profesyonel Çözümler";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Layout from "../layouts/Layout.astro";
 ---
 
-<html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-  </head>
-
-  <body style="font-family: Arial; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px;">
-
+<Layout
+  title={title}
+  description="Rize'de su kaçağı tespiti ve çözüm yöntemleri hakkında bilgilendirici makale. Profesyonel hizmetler ve garantili çözümler için öneriler."
+>
+  <Header />
+  <div class="p-20">
     <h1>Rize Su Kaçağı Tespiti ve Kaçak Problemlerine Çözümler</h1>
 
     <p>
-      Ev ve iş yerlerinde yaşanan su kaçağı problemleri, zamanında tespit edilmediğinde
-      hem maddi zarara hem de yapısal hasarlara yol açabilir. Özellikle Rize gibi
-      yağışlı bölgelerde, tesisat sorunları daha hızlı büyüyebildiği için düzenli
-      kontrol ve profesyonel müdahale oldukça önemlidir. Su kaçaklarının çoğu gözle
-      görülemeyecek noktalarda oluşur ve klasik yöntemlerle bulunması oldukça
-      zordur. Bu nedenle teknolojik cihazlarla yapılan kaçak tespiti hem hızlı hem de
-      garantili çözüm sağlar.
+      Ev ve iş yerlerinde yaşanan su kaçağı problemleri, zamanında tespit
+      edilmediğinde hem maddi zarara hem de yapısal hasarlara yol açabilir.
+      Özellikle Rize gibi yağışlı bölgelerde, tesisat sorunları daha hızlı
+      büyüyebildiği için düzenli kontrol ve profesyonel müdahale oldukça
+      önemlidir. Su kaçaklarının çoğu gözle görülemeyecek noktalarda oluşur ve
+      klasik yöntemlerle bulunması oldukça zordur. Bu nedenle teknolojik
+      cihazlarla yapılan kaçak tespiti hem hızlı hem de garantili çözüm sağlar.
     </p>
 
     <p>
-      Rize’de su kaçağıyla karşılaştığınızda, uzman bir ekiple çalışmak uzun vadede
-      daha güvenli ve maliyet açısından daha avantajlıdır. Modern cihazlar sayesinde
-      kırma–dökme işlemi yapılmadan, kaçağın nerede olduğu noktasal olarak tespit
-      edilebilir. Bu da hem zamandan kazandırır hem de gereksiz tadilat masraflarını
-      önler.
+      Rize’de su kaçağıyla karşılaştığınızda, uzman bir ekiple çalışmak uzun
+      vadede daha güvenli ve maliyet açısından daha avantajlıdır. Modern
+      cihazlar sayesinde kırma–dökme işlemi yapılmadan, kaçağın nerede olduğu
+      noktasal olarak tespit edilebilir. Bu da hem zamandan kazandırır hem de
+      gereksiz tadilat masraflarını önler.
     </p>
 
     <p>
       Profesyonel hizmet almak isteyenler için önerimiz:
-      <a href="https://analiztesisat.com/rize-su-kacagi-ve-gider-tikanikligi-acma-garantili-cozum"
-         target="_blank"
-         rel="noopener dofollow noreferrer">
+      <a
+        href="https://analiztesisat.com/rize-su-kacagi-ve-gider-tikanikligi-acma-garantili-cozum"
+        target="_blank"
+        rel="noopener dofollow noreferrer"
+      >
         Rize Su Kaçağı ve Gider Tıkanıklığı Açma – Analiz Tesisat
-      </a>.
-      Alanında deneyimli ekipleri ve gelişmiş cihazlarıyla hızlı, güvenilir ve
-      garantili çözümler sunmaktadır.
+      </a>. Alanında deneyimli ekipleri ve gelişmiş cihazlarıyla hızlı,
+      güvenilir ve garantili çözümler sunmaktadır.
     </p>
+  </div>
 
-  </body>
-</html>
+  <Footer />
+</Layout>
